@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch ConsumerDemoGroups",
+            "request": "launch",
+            "mainClass": "com.github.kafka_trainnig.ConsumerDemoGroups",
+            "projectName": "examples"
+        },
+        {
+            "type": "java",
             "name": "Launch ProducerKeysDemo",
             "request": "launch",
             "mainClass": "com.github.kafka_trainnig.ProducerKeysDemo",
