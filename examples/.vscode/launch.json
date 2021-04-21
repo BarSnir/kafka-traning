@@ -6,6 +6,27 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch ProducerKeysDemo",
+            "request": "launch",
+            "mainClass": "com.github.kafka_trainnig.ProducerKeysDemo",
+            "projectName": "examples"
+        },
+        {
+            "type": "java",
+            "name": "Launch ConsumerDemo",
+            "request": "launch",
+            "mainClass": "com.github.kafka_trainnig.ConsumerDemo",
+            "projectName": "examples"
+        },
+        {
+            "type": "java",
+            "name": "Launch ProducerCBDemo",
+            "request": "launch",
+            "mainClass": "com.github.kafka_trainnig.ProducerCBDemo",
+            "projectName": "examples"
+        },
+        {
+            "type": "java",
             "name": "Launch ProducerDemo",
             "request": "launch",
             "mainClass": "com.github.kafka_trainnig.ProducerDemo",
