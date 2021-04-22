@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch TwitterProducer",
+            "request": "launch",
+            "mainClass": "com.github.kafka_trainnig.TwitterProducer",
+            "projectName": "examples"
+        },
+        {
+            "type": "java",
             "name": "Launch ConsumerDemoGroups",
             "request": "launch",
             "mainClass": "com.github.kafka_trainnig.ConsumerDemoGroups",
