@@ -124,7 +124,6 @@ public class TwitterProducer {
         Properties.setProperty(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
         Properties.setProperty(ProducerConfig.LINGER_MS_CONFIG, "20");
         Properties.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, Integer.toString(32*1024));
-        
 
 
         return new KafkaProducer<String, String>(Properties);
