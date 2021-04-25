@@ -5,6 +5,8 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Properties;
 
+import com.google.gson.JsonParser;
+
 import org.apache.http.HttpHost;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -30,23 +32,25 @@ public class KafkaElasticsearchConsumer
     {
         Logger logger =  LoggerFactory.getLogger(KafkaElasticsearchConsumer.class.getClass());
         RestHighLevelClient client = createClient();
-
-
         String topic = "twitter_tweets";
         KafkaConsumer<String, String> consumer = createConsumer(topic);
+
         while (true){
             ConsumerRecords<String, String> records =consumer.poll(Duration.ofMillis(100));
             for(ConsumerRecord<String, String>record : records){
+
                 String jsonString = record.value();
+                String id = extractIdFromTweets(record.value());
                 IndexRequest indexRequest = new IndexRequest(
-                    "twitter"
+                    "twitter",
+                    null,
+                    id
                 ).source(jsonString, XContentType.JSON);
 
                 IndexResponse indexResponse = client.index(
                     indexRequest, RequestOptions.DEFAULT
                 );
-                String id = indexResponse.getId();
-                logger.info(id);
+                logger.info(indexResponse.getId());
 
                 logger.info(
                     "Key:"+ record.key() + "\n" + 
@@ -80,10 +84,21 @@ public class KafkaElasticsearchConsumer
         return consumer;
     }
 
-    public static RestHighLevelClient createClient(){
+    public static RestHighLevelClient createClient()
+    {
         RestHighLevelClient client = new RestHighLevelClient(
             RestClient.builder(new HttpHost("localhost", 9200, "http"))
         );
         return client;
+    }
+
+
+
+    private static String extractIdFromTweets(String message)
+    { 
+        return JsonParser.parseString(message)
+                    .getAsJsonObject()
+                    .get("id_str")
+                    .getAsString();
     }
 }
