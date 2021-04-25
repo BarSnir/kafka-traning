@@ -13,8 +13,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -38,29 +38,28 @@ public class KafkaElasticsearchConsumer
         while (true){
             ConsumerRecords<String, String> records =consumer.poll(Duration.ofMillis(100));
             logger.info("Received "+records.count()+" items");
+            BulkRequest bulk = new BulkRequest();
+
             for(ConsumerRecord<String, String>record : records){
-
-                String jsonString = record.value();
-                String id = extractIdFromTweets(record.value());
-                IndexRequest indexRequest = new IndexRequest(
-                    "twitter",
-                    null,
-                    id
-                ).source(jsonString, XContentType.JSON);
-
-                IndexResponse indexResponse = client.index(
-                    indexRequest, RequestOptions.DEFAULT
-                );
-
-                logger.info(indexResponse.getId());
+                try {
+                    String jsonString = record.value();
+                    String id = extractIdFromTweets(record.value());
+                    IndexRequest indexRequest = new IndexRequest(
+                        "twitter",
+                        null,
+                        id
+                    ).source(jsonString, XContentType.JSON);
+                    bulk.add(indexRequest);
+                    Thread.sleep(1000);
+                } catch (InterruptedException e){
+                   logger.warn("Bad dataset: "+record.value());
+                }
+            }
+            if (records.count() > 0){
+                client.bulk(bulk, RequestOptions.DEFAULT);
                 logger.info("Committing offsets");
                 consumer.commitSync();
                 logger.info("Offset been committed!");
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e){
-                    e.printStackTrace();
-                }
             }
         }
         //client.close();
@@ -77,7 +76,7 @@ public class KafkaElasticsearchConsumer
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-        properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "10");
+        properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "100");
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(properties);
         consumer.subscribe(Arrays.asList(topic));
@@ -91,8 +90,6 @@ public class KafkaElasticsearchConsumer
         );
         return client;
     }
-
-
 
     private static String extractIdFromTweets(String message)
     { 
