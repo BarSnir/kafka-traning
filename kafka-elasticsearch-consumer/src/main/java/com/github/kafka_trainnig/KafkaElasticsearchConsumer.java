@@ -50,8 +50,7 @@ public class KafkaElasticsearchConsumer
                         id
                     ).source(jsonString, XContentType.JSON);
                     bulk.add(indexRequest);
-                    Thread.sleep(1000);
-                } catch (InterruptedException e){
+                } catch (NullPointerException e){
                    logger.warn("Bad dataset: "+record.value());
                 }
             }
