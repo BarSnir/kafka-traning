@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 public class TwitterProducer {
 
     Logger logger = LoggerFactory.getLogger(TwitterProducer.class.getName());
-    List<String> terms = Lists.newArrayList("israel");
+    List<String> terms = Lists.newArrayList("python","java","javascript","elasticsearch", "kafka");
 
     public TwitterProducer(){}
 
@@ -78,10 +78,10 @@ public class TwitterProducer {
           }
     }
 
-    String consumerKey = "<API-KEY>";
-    String consumerSecret = "<API-Secret>";
-    String token = "<Token>";
-    String secret = "<Secret>";
+    String consumerKey = "VGSJ4vV2zwf65pu0ChLOnLbX9";
+    String consumerSecret = "bKnZEU5zDvfCVxnBbaDu7tax5P03iawwQsSIQ1Qa7M7iQSvhiW";
+    String token = "1190219192915681281-m849KlZ4VxDsZauqGI0ngicpqIO2jr";
+    String secret = "RSophA41bJoFObk4xOulwJjmNHYoYSD1Gr9xn6Lu8N4Zb";
 
     public Client createTwitterClient( BlockingQueue<String> msgQueue)
     {
