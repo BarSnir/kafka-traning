@@ -1,0 +1,4 @@
+hi
+how are you?
+The connect is reading only by the end of line.
+Another test is
