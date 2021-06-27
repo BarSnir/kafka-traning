@@ -6,6 +6,7 @@
 # description: Standard script to start and stop zookeeper
 
 DAEMON_PATH=/home/cloud_user/kafka/bin
+DAEMON_CONFIG=/home/cloud_user/kafka/config
 DAEMON_NAME=zookeeper
 
 PATH=$PATH:$DAEMON_PATH
@@ -20,7 +21,7 @@ case "$1" in
             echo "Zookeeper is already running";
         else
           echo "Starting $DAEMON_NAME";
-          $DAEMON_PATH/zookeeper-server-start.sh -daemon /home/ubuntu/kafka/config/zookeeper.properties
+          $DAEMON_PATH/zookeeper-server-start.sh -daemon $DAEMON_CONFIG/zookeeper.properties
         fi
         ;;
   stop)
